@@ -11,7 +11,7 @@ public class Aula {
 
 	public Aula(Aula copiaAula) {
 		if (copiaAula == null) {
-			throw new NullPointerException("ERROR: No se puede copiar una permanencia nula.");
+			throw new NullPointerException("ERROR: No se puede copiar un aula nula.");
 		}
 		setNombre(copiaAula.getNombre());
 	}
@@ -21,8 +21,11 @@ public class Aula {
 	}
 
 	private void setNombre(String nombre) {
-		if (nombre == null || nombre.trim().isEmpty()) {
-			throw new NullPointerException("ERROR: La fecha de una permanencia no puede ser nula.");
+		if (nombre == null) {
+			throw new NullPointerException("ERROR: El nombre del aula no puede ser nulo.");
+		}
+		if (nombre == "") {
+			throw new IllegalArgumentException("ERROR: El nombre del aula no puede estar vacío.");
 		}
 		this.nombre = nombre;
 	}
@@ -44,15 +47,12 @@ public class Aula {
 			return false;
 		}
 		Aula other = (Aula) obj;
-		if (nombre.equals(other.nombre)) {
-			return false;
-		} else
-			return nombre.equals(other.nombre);
+		return Objects.equals(nombre, other.nombre);
 	}
 
 	@Override
 	public String toString() {
-		return "Aula [nombre=" + nombre + "]";
+		return "nombre Aula=" + nombre + "";
 	}
 
 }

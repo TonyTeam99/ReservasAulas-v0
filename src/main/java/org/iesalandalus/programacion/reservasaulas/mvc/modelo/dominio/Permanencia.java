@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Permanencia {
 	private LocalDate dia;
-	private static final DateTimeFormatter FORMATO_DIA = DateTimeFormatter.ofPattern("dd/mm/yyyy");
+	private static final DateTimeFormatter FORMATO_DIA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	private Tramo tramo;
 
 	public Permanencia(LocalDate dia, Tramo tramo) {
@@ -28,7 +28,7 @@ public class Permanencia {
 
 	private void setDia(LocalDate dia) {
 		if (dia == null) {
-			throw new NullPointerException("ERROR: La fecha de una permanencia no puede ser nula.");
+			throw new NullPointerException("ERROR: El día de una permanencia no puede ser nulo.");
 		}
 		this.dia = dia;
 	}
@@ -39,10 +39,10 @@ public class Permanencia {
 
 	private void setTramo(Tramo tramo) {
 		if (tramo == null) {
-			throw new NullPointerException("ERROR: La fecha de una permanencia no puede ser nula.");
+			throw new NullPointerException("ERROR: El tramo de una permanencia no puede ser nulo.");
 		}
-		if (tramo == Tramo.MAÑANA) {
-			this.tramo = Tramo.MAÑANA;
+		if (tramo == Tramo.MANANA) {
+			this.tramo = Tramo.MANANA;
 		} else if (tramo == Tramo.TARDE) {
 			this.tramo = Tramo.TARDE;
 		} else
@@ -78,7 +78,7 @@ public class Permanencia {
 
 	@Override
 	public String toString() {
-		return "Permanencia [dia=" + dia + ", tramo=" + tramo + "]";
+		return "dia=" + dia.format(FORMATO_DIA) + ", tramo=" + tramo.toString() + "";
 	}
 
 }
