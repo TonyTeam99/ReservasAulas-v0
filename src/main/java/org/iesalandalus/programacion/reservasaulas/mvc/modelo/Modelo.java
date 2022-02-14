@@ -81,6 +81,10 @@ public class Modelo {
 	}
 
 	public void buscarReserva(Reserva reserva) throws OperationNotSupportedException {
+		reservas.buscar(reserva);
+	}
+
+	public void realizarReserva(Reserva reserva) throws OperationNotSupportedException {
 		reservas.insertar(reserva);
 	}
 
@@ -100,7 +104,7 @@ public class Modelo {
 		return reservas.getReservasPermanencia(permanencia);
 	}
 
-	public consultarDisponibilidad(Aula aula, Permanencia permanencia) {
-		return reservas.consultarDisponibilidad(aula,  permanencia);
+	public boolean consultarDisponibilidad(Aula aula, Permanencia permanencia) {
+		return reservas.consultarDisponibilidad(aula, permanencia);
 	}
 }
