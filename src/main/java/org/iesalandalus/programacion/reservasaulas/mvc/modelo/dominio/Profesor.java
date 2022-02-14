@@ -3,9 +3,8 @@ package org.iesalandalus.programacion.reservasaulas.mvc.modelo.dominio;
 import java.util.Objects;
 
 public class Profesor {
-	private static final String ER_TELEFONO = "[69][0-9]{8}";
-	private static final String ER_CORREO = ("\"^[A-Z0-9._%+-]+@[A-Z0-9.-]*$\";");
-
+	private static final String ER_TELEFONO = "^[69][0-9]{8}$";
+	private static final String ER_CORREO = "^[\\w-]+(\\.[\\w-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private String nombre;
 	private String correo;
 	private String telefono;
@@ -16,23 +15,65 @@ public class Profesor {
 	}
 
 	public Profesor(String nombre, String correo, String telefono) {
-		setNombre(nombre);
-		setCorreo(correo);
-		if (telefono != null) {
+		if (telefono == null) {
+			setNombre(nombre);
+			setCorreo(correo);
+		} else {
+			setNombre(nombre);
+			setCorreo(correo);
 			setTelefono(telefono);
+		}
+
+	}
+
+	public Profesor(Profesor profesor) {
+		if (profesor == null) {
+			throw new NullPointerException("ERROR: No se puede copiar un profesor nulo.");
+		} else {
+			if (profesor.getTelefono() == null) {
+				setNombre(profesor.getNombre());
+				setCorreo(profesor.getCorreo());
+			} else {
+				setNombre(profesor.getNombre());
+				setCorreo(profesor.getCorreo());
+				setTelefono(profesor.getTelefono());
+			}
+
 		}
 	}
 
-	public Profesor(Profesor copiaProfesor) {
-		if (copiaProfesor == null) {
-			throw new NullPointerException("ERROR: No se puede copiar un profesor nulo.");
-		} else {
-			setNombre(copiaProfesor.nombre);
-			setCorreo(copiaProfesor.correo);
-			if (copiaProfesor.telefono != null) {
-				setTelefono(copiaProfesor.telefono);
-			}
+	private void setNombre(String nombre) {
+		if (nombre == null) {
+			throw new NullPointerException("ERROR: El nombre del profesor no puede ser nulo.");
 		}
+		if (nombre == "") {
+			throw new IllegalArgumentException("ERROR: El nombre del profesor no puede estar vacío.");
+		} else {
+			this.nombre = nombre;
+		}
+
+	}
+
+	public void setCorreo(String correo) {
+		if (correo == null) {
+			throw new NullPointerException("ERROR: El correo del profesor no puede ser nulo.");
+		}
+
+		if (!correo.matches(ER_CORREO)) {
+			throw new IllegalArgumentException("ERROR: El correo del profesor no es válido.");
+		} else {
+			this.correo = correo;
+		}
+
+	}
+
+	public void setTelefono(String telefono) {
+		if (!telefono.matches(ER_TELEFONO)) {
+			throw new IllegalArgumentException("ERROR: El teléfono del profesor no es válido.");
+		} else {
+			this.telefono = telefono;
+		}
+
 	}
 
 	public String getNombre() {
@@ -47,66 +88,32 @@ public class Profesor {
 		return telefono;
 	}
 
-	private void setNombre(String nombre) {
-		if (nombre == null) {
-			throw new NullPointerException("ERROR: El nombre del profesor no puede ser nulo.");
-		}
-		if (nombre == "") {
-			throw new IllegalArgumentException("ERROR: El nombre del profesor no puede estar vacío.");
-		}
-		this.nombre = nombre;
-	}
-
-	public void setCorreo(String correo) {
-		if (correo == null) {
-			throw new NullPointerException("ERROR: El correo del profesor no puede ser nulo.");
-		}
-		if (correo == "") {
-			throw new IllegalArgumentException("ERROR: El correo del profesor no es válido.");
-		} else if (correo.matches(ER_CORREO)) {
-			throw new IllegalArgumentException("ERROR: El correo no tiene un formato válido.");
-		} else {
-			this.correo = correo;
-
-		}
-	}
-
-	public void setTelefono(String telefono) {
-		if (telefono == null) {
-			throw new NullPointerException("ERROR: El teléfono del profesor no puede ser nulo.");
-		} else if (telefono.matches(ER_TELEFONO)) {
-			this.telefono = telefono;
-		} else {
-			throw new IllegalArgumentException("ERROR: El teléfono del profesor no es válido.");
-		}
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(nombre);
+		return Objects.hash(correo, nombre, telefono);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		Profesor other = (Profesor) obj;
-		return Objects.equals(nombre, other.nombre);
+		return Objects.equals(correo, other.correo) && Objects.equals(nombre, other.nombre)
+				&& Objects.equals(telefono, other.telefono);
 	}
 
 	@Override
 	public String toString() {
-		if (telefono != null) {
-			return "nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono + "";
+		if (telefono == null) {
+			return "nombre=" + nombre + ", correo=" + correo;
 		} else {
-			return "nombre=" + nombre + ", correo=" + correo + "";
+			return "nombre=" + nombre + ", correo=" + correo + ", telefono=" + telefono;
 		}
+
 	}
+
 }

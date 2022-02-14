@@ -83,11 +83,10 @@ public class Reservas {
 			if (tamanoSuperado(getTamano()) == true) {
 				throw new OperationNotSupportedException("ERROR: No se aceptan más reservas.");
 			} else {
-				if (!(buscarIndice(reserva) != -1)) {
-					coleccionReservas[getTamano()] = new Reserva(reserva);
-				} else {
+				if (buscarIndice(reserva) != -1) {
 					throw new OperationNotSupportedException("ERROR: No existe ninguna reserva con ese nombre.");
-
+				} else {
+					coleccionReservas[getTamano()] = new Reserva(reserva);
 				}
 			}
 

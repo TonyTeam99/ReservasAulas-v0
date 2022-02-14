@@ -36,7 +36,7 @@ public class Vista {
 	}
 
 	public void salir() {
-		System.out.println("Adios");
+		System.out.println("Adiós");
 
 	}
 
@@ -45,7 +45,7 @@ public class Vista {
 		try {
 			Aula aula = Consola.leerAula();
 			controlador.insertarAula(aula);
-			System.out.println("Aula insertado correctamente" + NOMBRE_VALIDO);
+			System.out.println("Aula insertada correctamente" + NOMBRE_VALIDO);
 		} catch (OperationNotSupportedException | IllegalArgumentException e) {
 			System.out.println(ERROR + e.getMessage());
 		}
@@ -56,7 +56,7 @@ public class Vista {
 		try {
 			Aula aula = Consola.leerAula();
 			controlador.borrarAula(aula);
-			System.out.println("Aula borrado correctamente.");
+			System.out.println("Aula borrada correctamente.");
 		} catch (OperationNotSupportedException | IllegalArgumentException e) {
 			System.out.println(ERROR + e.getMessage());
 		}
@@ -70,9 +70,9 @@ public class Vista {
 			aula = Consola.leerAula();
 			aula = controlador.buscarAula(aula);
 			if (aula != null) {
-				System.out.println("El aula buscado es: " + aula);
+				System.out.println("La aula buscada es: " + aula);
 			} else {
-				System.out.println("No existe ningún aula con ese nombre");
+				System.out.println("No existe ninguna aula con ese nombre");
 			}
 		} catch (IllegalArgumentException e) {
 			System.out.println(ERROR + e.getMessage());

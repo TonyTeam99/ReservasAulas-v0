@@ -1,5 +1,7 @@
 package org.iesalandalus.programacion.reservasaulas.mvc.modelo.negocio;
 
+import java.util.Arrays;
+
 import javax.naming.OperationNotSupportedException;
 
 import org.iesalandalus.programacion.reservasaulas.mvc.modelo.dominio.Aula;
@@ -7,113 +9,128 @@ import org.iesalandalus.programacion.reservasaulas.mvc.modelo.dominio.Aula;
 public class Aulas {
 	private int capacidad;
 	private int tamano;
-	Aula[] coleccionAulas;
+	private Aula[] coleccionAulas;
 
-	public Aulas(int capacidadColeccion) {
-		if (capacidadColeccion <= 0) {
+	public Aulas(int tamano) {
+		if (tamano <= 0) {
 			throw new IllegalArgumentException("ERROR: La capacidad debe ser mayor que cero.");
-		}
-		this.capacidad = capacidadColeccion;
-		coleccionAulas = new Aula[capacidadColeccion];
-		this.tamano = 0;
-	}
-
-	private Aula[] copiaProfundaAulas() {
-		Aula[] copiaProfundaAulas = new Aula[getTamano()];
-		for (int i = 0; i < copiaProfundaAulas.length; i++) {
-			copiaProfundaAulas[i] = coleccionAulas[i];
-		}
-		return copiaProfundaAulas;
-	}
-
-	public int getCapacidad() {
-		return this.capacidad;
-	}
-
-	public int getTamano() {
-		return this.tamano;
-	}
-
-	private boolean tamanoSuperado(int indice) {
-		return indice >= tamano;
-	}
-
-	private boolean capacidadSuperada(int indice) {
-		return indice >= capacidad;
-	}
-
-	private int buscarIndice(Aula aula) {
-		int indice = 0;
-		boolean aulaEncontrada = false;
-		while (!tamanoSuperado(indice) && !aulaEncontrada) {
-			if (coleccionAulas[indice].equals(aula)) {
-				aulaEncontrada = true;
-			} else {
-				indice++;
-			}
-		}
-		return indice;
-	}
-
-	public void insertar(Aula aula) throws OperationNotSupportedException {
-		if (aula == null) {
-			throw new NullPointerException("ERROR: No se puede insertar un aula nula.");
-		}
-		int indice = buscarIndice(aula);
-		if (capacidadSuperada(indice)) {
-			throw new OperationNotSupportedException("ERROR: No se aceptan más aulas.");
-		} else if (!tamanoSuperado(indice)) {
-			throw new OperationNotSupportedException("ERROR: Ya existe una cita para esa fecha y hora.");
 		} else {
-			coleccionAulas[indice] = new Aula(aula);
-			this.tamano++;
+			this.coleccionAulas = new Aula[tamano];
 		}
-	}
 
-	public Aula buscar(Aula aula) {
-		if (aula == null) {
-			throw new NullPointerException("ERROR: No se puede buscar un aula nula.");
-		}
-		int indice = buscarIndice(aula);
-		if (tamanoSuperado(indice)) {
-			return null;
-		} else {
-			return new Aula(coleccionAulas[indice]);
-		}
-	}
-
-	private void desplazarUnaPosicionHaciaIzquierda(int indice) {
-		{
-			int i;
-			for (i = indice; !tamanoSuperado(i); i++) {
-				coleccionAulas[i] = coleccionAulas[i + 1];
-			}
-			coleccionAulas[i] = null;
-			tamano--;
-		}
-	}
-
-	public void borrar(Aula aula) throws OperationNotSupportedException {
-		if (aula == null) {
-			throw new NullPointerException("ERROR: No se puede borrar un aula nula.");
-		}
-		if (tamanoSuperado(buscarIndice(aula))) {
-			throw new OperationNotSupportedException("ERROR: No existe ningún aula con ese nombre.");
-		} else {
-			desplazarUnaPosicionHaciaIzquierda(buscarIndice(aula));
-		}
 	}
 
 	public Aula[] get() {
 		return copiaProfundaAulas();
 	}
 
-	public String[] representar() {
-		String[] arrayString = new String[getTamano()];
-		for (int i = 0; i < arrayString.length; i++) {
-			arrayString[i] = coleccionAulas[i].toString();
+	private Aula[] copiaProfundaAulas() {
+		Aula[] copia = new Aula[coleccionAulas.length];
+
+		for (int i = 0; i < coleccionAulas.length; i++) {
+			copia[i] = coleccionAulas[i];
 		}
-		return arrayString;
+		return copia;
 	}
 
+	public int getCapacidad() {
+
+		return coleccionAulas.length;
+	}
+
+	public int getTamano() {
+		tamano = 0;
+		for (int i = 0; i < coleccionAulas.length; i++) {
+			if (coleccionAulas[i] != null) {
+				tamano = tamano + 1;
+			}
+		}
+		return tamano;
+	}
+
+	private int buscarIndice(Aula aula) {
+
+		return Arrays.asList(coleccionAulas).indexOf(aula);
+
+	}
+
+	private boolean tamanoSuperado(int tamano) {
+
+		if (tamano >= getCapacidad()) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	private boolean capacidadSuperada(int capacidad) {
+
+		if (capacidad > getCapacidad()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void insertar(Aula aula) throws OperationNotSupportedException {
+
+		if (aula == null) {
+			throw new NullPointerException("ERROR: No se puede insertar un aula nula.");
+		} else {
+			if (tamanoSuperado(getTamano()) == true) {
+				throw new OperationNotSupportedException("ERROR: No se aceptan más aulas.");
+			} else {
+				if (buscarIndice(aula) != -1) {
+					throw new OperationNotSupportedException("ERROR: Ya existe un aula con ese nombre.");
+				} else {
+					coleccionAulas[getTamano()] = new Aula(aula);
+				}
+			}
+
+		}
+
+	}
+
+	public Aula buscar(Aula aula) {
+		if (aula == null) {
+			throw new NullPointerException("ERROR: No se puede buscar un aula nula.");
+		} else {
+			if (buscarIndice(aula) == -1) {
+				return null;
+			} else {
+				return coleccionAulas[buscarIndice(aula)];
+			}
+		}
+	}
+
+	public void borrar(Aula aula) throws OperationNotSupportedException {
+		if (aula == null) {
+			throw new NullPointerException("ERROR: No se puede borrar un aula nula.");
+		} else {
+
+			if (buscarIndice(aula) == -1) {
+				throw new OperationNotSupportedException("ERROR: No existe ningún aula con ese nombre.");
+			} else {
+				desplazarUnaPosicionHaciaIzquierda(buscarIndice(aula));
+			}
+		}
+
+	}
+
+	private void desplazarUnaPosicionHaciaIzquierda(int posicion) {
+		for (int i = posicion; i < getTamano(); i++) {
+			coleccionAulas[i] = coleccionAulas[i + 1];
+		}
+		coleccionAulas[getTamano()] = null;
+	}
+
+	public String[] representar() {
+		String[] representa = new String[getTamano()];
+		for (int i = 0; i < representa.length; i++) {
+			representa[i] = coleccionAulas[i].toString();
+		}
+		return representa;
+
+	}
 }
