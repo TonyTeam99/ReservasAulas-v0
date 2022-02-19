@@ -36,7 +36,7 @@ public class Vista {
 	}
 
 	public void salir() {
-		System.out.println("Adiós");
+		System.out.println("¡Hasta la vista!");
 
 	}
 

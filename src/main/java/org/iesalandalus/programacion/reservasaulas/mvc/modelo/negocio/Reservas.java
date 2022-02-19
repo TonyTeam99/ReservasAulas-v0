@@ -1,7 +1,5 @@
 package org.iesalandalus.programacion.reservasaulas.mvc.modelo.negocio;
 
-import java.util.Arrays;
-
 import javax.naming.OperationNotSupportedException;
 
 import org.iesalandalus.programacion.reservasaulas.mvc.modelo.dominio.Aula;
@@ -10,185 +8,188 @@ import org.iesalandalus.programacion.reservasaulas.mvc.modelo.dominio.Profesor;
 import org.iesalandalus.programacion.reservasaulas.mvc.modelo.dominio.Reserva;
 
 public class Reservas {
+
 	private int capacidad;
 	private int tamano;
-	private Reserva[] coleccionReservas;
+	Reserva[] coleccionReservas;
 
-	public Reservas(int tamano) {
-		if (tamano <= 0) {
+	public Reservas(int reservas) {
+		if (reservas <= 0) {
 			throw new IllegalArgumentException("ERROR: La capacidad debe ser mayor que cero.");
-		} else {
-			this.coleccionReservas = new Reserva[tamano];
 		}
+		capacidad = reservas;
+		tamano = 0;
+		coleccionReservas = new Reserva[reservas];
 
 	}
 
 	public Reserva[] get() {
-		return copiaProfundaAulas();
+		return copiaProfundaReservas();
 	}
 
-	private Reserva[] copiaProfundaAulas() {
-		Reserva[] copia = new Reserva[coleccionReservas.length];
-
-		for (int i = 0; i < coleccionReservas.length; i++) {
-			copia[i] = coleccionReservas[i];
+	private Reserva[] copiaProfundaReservas() {
+		Reserva[] copia = new Reserva[capacidad];
+		for (int i = 0; i < tamano; i++) {
+			copia[i] = new Reserva(coleccionReservas[i]);
 		}
 		return copia;
 	}
 
 	public int getCapacidad() {
-		return coleccionReservas.length;
+		return capacidad;
 	}
 
 	public int getTamano() {
-		tamano = 0;
-		for (int i = 0; i < coleccionReservas.length; i++) {
-			if (coleccionReservas[i] != null) {
-				tamano = tamano + 1;
-			}
-		}
 		return tamano;
 	}
 
-	private int buscarIndice(Reserva reserva) {
-
-		return Arrays.asList(coleccionReservas).indexOf(reserva);
-
-	}
-
-	private boolean tamanoSuperado(int tamano) {
-
-		if (tamano >= getCapacidad()) {
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
-	private boolean capacidadSuperado(int capacidad) {
-
-		if (tamano > getCapacidad()) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public void insertar(Reserva reserva) throws OperationNotSupportedException {
-
 		if (reserva == null) {
 			throw new NullPointerException("ERROR: No se puede insertar una reserva nula.");
-		} else {
-			if (tamanoSuperado(getTamano()) == true) {
-				throw new OperationNotSupportedException("ERROR: No se aceptan más reservas.");
-			} else {
-				if (buscarIndice(reserva) != -1) {
-					throw new OperationNotSupportedException("ERROR: No existe ninguna reserva con ese nombre.");
-				} else {
-					coleccionReservas[getTamano()] = new Reserva(reserva);
-				}
-			}
-
 		}
+		int indice = buscarIndice(reserva);
+		if (capacidadSuperada(indice)) {
+			throw new OperationNotSupportedException("ERROR: No se aceptan más reservas.");
+		}
+		if (tamanoSuperado(indice)) {
+			coleccionReservas[indice] = new Reserva(reserva);
+			tamano++;
+		} else {
+			throw new OperationNotSupportedException("ERROR: Ya existe una reserva con ese nombre.");
+		}
+
+	}
+
+	private int buscarIndice(Reserva reserva) {
+		int indice = 0;
+		boolean reservaEncontrada = false;
+		while (!tamanoSuperado(indice) && !reservaEncontrada) {
+			if (coleccionReservas[indice].equals(reserva)) {
+				reservaEncontrada = true;
+			} else {
+				indice++;
+			}
+		}
+		return indice;
+	}
+
+	private boolean tamanoSuperado(int indice) {
+
+		return (indice >= tamano);
+	}
+
+	private boolean capacidadSuperada(int indice) {
+
+		return (indice >= capacidad);
 	}
 
 	public Reserva buscar(Reserva reserva) {
 		if (reserva == null) {
 			throw new NullPointerException("ERROR: No se puede buscar una reserva nula.");
+		}
+		int indice = buscarIndice(reserva);
+		if (tamanoSuperado(indice)) {
+			return null;
 		} else {
-			if (buscarIndice(reserva) == -1) {
-				return null;
-			} else {
-				return coleccionReservas[buscarIndice(reserva)];
-			}
+			return new Reserva(reserva);
 		}
 	}
 
 	public void borrar(Reserva reserva) throws OperationNotSupportedException {
 		if (reserva == null) {
 			throw new NullPointerException("ERROR: No se puede borrar una reserva nula.");
+		}
+		int indice = buscarIndice(reserva);
+		if (!tamanoSuperado(indice)) {
+			desplazarUnaPosicionHaciaIzquierda(indice);
 		} else {
-
-			if (buscarIndice(reserva) == -1) {
-				throw new OperationNotSupportedException("ERROR: No existe ninguna reserva con ese nombre.");
-			} else {
-				desplazarUnaPosicionHaciaIzquierda(buscarIndice(reserva));
-			}
+			throw new OperationNotSupportedException("ERROR: No existe ninguna reserva con ese nombre.");
 		}
 
 	}
 
 	private void desplazarUnaPosicionHaciaIzquierda(int posicion) {
-		for (int i = posicion; i < getTamano(); i++) {
+		for (int i = posicion; !tamanoSuperado(i); i++) {
 			coleccionReservas[i] = coleccionReservas[i + 1];
 		}
-		coleccionReservas[getTamano()] = null;
+		tamano--;
 	}
 
-	public Reserva[] getReservasProfesor(Profesor profesor) {
-		Reserva[] reservasprofesor = new Reserva[getCapacidad()];
-		int indice = 0;
-		for (int i = 0; i < getTamano(); i++) {
-			if (coleccionReservas[i].getProfesor() == profesor) {
-				reservasprofesor[indice] = coleccionReservas[i];
-				indice++;
-			}
+	public String[] representar() {
+		String[] representa = new String[tamano];
+		for (int i = 0; i < tamano; i++) {
+			representa[i] = coleccionReservas[i].toString();
 		}
-		return reservasprofesor;
+		return representa;
 	}
 
-	public Reserva[] getReservasPermanencia(Permanencia permanencia) {
-		Reserva[] reservaspermanencia = new Reserva[getCapacidad()];
-		int indice = 0;
-		for (int i = 0; i < getTamano(); i++) {
-			if (coleccionReservas[i].getPermanencia() == permanencia) {
-				reservaspermanencia[indice] = coleccionReservas[i];
-				indice++;
+	public Reserva[] getReservasProfesor(Profesor reservasProfesor) {
+		if (reservasProfesor == null) {
+			throw new NullPointerException("ERROR: El profesor no puede ser nulo.");
+		}
+
+		Reserva[] reservas = new Reserva[capacidad];
+
+		int indiceReservas = 0;
+		for (int i = 0; i < tamano; i++) {
+			if (coleccionReservas[i].getProfesor().equals(reservasProfesor)) {
+				reservas[indiceReservas] = coleccionReservas[i];
+				indiceReservas++;
 			}
 		}
-		return reservaspermanencia;
+		return reservas;
 	}
 
-	public Reserva[] getReservasAula(Aula aula) {
-		Reserva[] reservasAula = new Reserva[getCapacidad()];
-		int indice = 0;
-		for (int i = 0; i < getTamano(); i++) {
-			if (coleccionReservas[i].getAula() == aula) {
-				reservasAula[indice] = coleccionReservas[i];
-				indice++;
+	public Reserva[] getReservasAula(Aula reservasAula) {
+		if (reservasAula == null) {
+			throw new NullPointerException("ERROR: El aula no puede ser nula.");
+		}
+
+		Reserva[] reservas = new Reserva[capacidad];
+
+		int indiceReservas = 0;
+		for (int i = 0; i < tamano; i++) {
+			if (coleccionReservas[i].getAula().equals(reservasAula)) {
+				reservas[indiceReservas] = coleccionReservas[i];
+				indiceReservas++;
 			}
 		}
-		return reservasAula;
+		return reservas;
+	}
+
+	public Reserva[] getReservasPermanencia(Permanencia reservasPermanencia) {
+		if (reservasPermanencia == null) {
+			throw new NullPointerException("ERROR: La permanencia no puede ser nula.");
+		}
+
+		Reserva[] reservas = new Reserva[capacidad];
+
+		int indiceReservas = 0;
+		for (int i = 0; i < tamano; i++) {
+			if (coleccionReservas[i].getPermanencia().equals(reservasPermanencia)) {
+				reservas[indiceReservas] = coleccionReservas[i];
+				indiceReservas++;
+			}
+		}
+
+		return reservas;
 	}
 
 	public boolean consultarDisponibilidad(Aula aula, Permanencia permanencia) {
 		if (aula == null) {
 			throw new NullPointerException("ERROR: No se puede consultar la disponibilidad de un aula nula.");
-
 		}
 		if (permanencia == null) {
 			throw new NullPointerException("ERROR: No se puede consultar la disponibilidad de una permanencia nula.");
 		}
 
-		for (int i = 0; i < getTamano(); i++) {
-			if (coleccionReservas[i].getAula() == aula) {
-				if (coleccionReservas[i].getPermanencia() == permanencia) {
-
+		for (int i = 0; i < tamano; i++) {
+			if (coleccionReservas[i].getAula().equals(aula)) {
+				if (coleccionReservas[i].getPermanencia().equals(permanencia)) {
 					return false;
 				}
-
 			}
 		}
 		return true;
-	}
-
-	public String[] representar() {
-		String[] representa = new String[getTamano()];
-		for (int i = 0; i < representa.length; i++) {
-			representa[i] = coleccionReservas[i].toString();
-		}
-		return representa;
-
 	}
 }

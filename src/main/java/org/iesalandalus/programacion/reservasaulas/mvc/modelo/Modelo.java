@@ -11,14 +11,17 @@ import org.iesalandalus.programacion.reservasaulas.mvc.modelo.negocio.Profesores
 import org.iesalandalus.programacion.reservasaulas.mvc.modelo.negocio.Reservas;
 
 public class Modelo {
+
 	private static final int CAPACIDAD = 50;
-	private Aulas aulas;
-	private Profesores profesores;
-	private Reservas reservas;
+	Profesores profesores;
+	Aulas aulas;
+	Reservas reservas;
 
 	public Modelo() {
-
-	}
+		profesores = new Profesores(CAPACIDAD);
+		aulas = new Aulas(CAPACIDAD);
+		reservas = new Reservas(CAPACIDAD);
+	};
 
 	public Aula[] getAulas() {
 		return aulas.get();
@@ -28,15 +31,15 @@ public class Modelo {
 		return aulas.getTamano();
 	}
 
-	public String[] representarAulas() {
+	public String[] representaAulas() {
 		return aulas.representar();
 	}
 
-	public Aula buscaAula(Aula aula) {
+	public Aula buscarAula(Aula aula) {
 		return aulas.buscar(aula);
 	}
 
-	public void InsertarAula(Aula aula) throws OperationNotSupportedException {
+	public void insertarAula(Aula aula) throws OperationNotSupportedException {
 		aulas.insertar(aula);
 	}
 
@@ -52,7 +55,7 @@ public class Modelo {
 		return profesores.getTamano();
 	}
 
-	public String[] representarProfesores() {
+	public String[] representaProfesores() {
 		return profesores.representar();
 	}
 
@@ -60,7 +63,7 @@ public class Modelo {
 		return profesores.buscar(profesor);
 	}
 
-	public void InsertarProfesor(Profesor profesor) throws OperationNotSupportedException {
+	public void insertarProfesor(Profesor profesor) throws OperationNotSupportedException {
 		profesores.insertar(profesor);
 	}
 
@@ -76,35 +79,36 @@ public class Modelo {
 		return reservas.getTamano();
 	}
 
-	public String[] representarReservas() {
+	public String[] representaReservas() {
 		return reservas.representar();
 	}
 
-	public void buscarReserva(Reserva reserva) throws OperationNotSupportedException {
-		reservas.buscar(reserva);
+	public Reserva buscarReserva(Reserva Reserva) {
+		return reservas.buscar(Reserva);
 	}
 
-	public void realizarReserva(Reserva reserva) throws OperationNotSupportedException {
-		reservas.insertar(reserva);
+	public void realizarReserva(Reserva Reserva) throws OperationNotSupportedException {
+		reservas.insertar(Reserva);
 	}
 
-	public void anularReserva(Reserva reserva) throws OperationNotSupportedException {
-		reservas.borrar(reserva);
+	public void anularReserva(Reserva Reserva) throws OperationNotSupportedException {
+		reservas.borrar(Reserva);
 	}
 
 	public Reserva[] getReservasAula(Aula aula) {
 		return reservas.getReservasAula(aula);
 	}
 
-	public Reserva[] getReservasProfesor(Profesor profesor) {
+	public Reserva[] getReservaProfesor(Profesor profesor) {
 		return reservas.getReservasProfesor(profesor);
 	}
 
-	public Reserva[] getReservasPermanencia(Permanencia permanencia) {
+	public Reserva[] getReservaPermanencia(Permanencia permanencia) {
 		return reservas.getReservasPermanencia(permanencia);
 	}
 
 	public boolean consultarDisponibilidad(Aula aula, Permanencia permanencia) {
 		return reservas.consultarDisponibilidad(aula, permanencia);
 	}
+
 }

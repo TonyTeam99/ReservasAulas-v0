@@ -38,11 +38,11 @@ public class Controlador {
 	}
 
 	public void insertarAula(Aula aula) throws OperationNotSupportedException {
-		modelo.InsertarAula(aula);
+		modelo.insertarAula(aula);
 	}
 
 	public void insertarProfesor(Profesor profesor) throws OperationNotSupportedException {
-		modelo.InsertarProfesor(profesor);
+		modelo.insertarProfesor(profesor);
 	}
 
 	public void borrarAula(Aula aula) throws OperationNotSupportedException {
@@ -54,7 +54,7 @@ public class Controlador {
 	}
 
 	public Aula buscarAula(Aula aula) {
-		return modelo.buscaAula(aula);
+		return modelo.buscarAula(aula);
 
 	}
 
@@ -64,17 +64,17 @@ public class Controlador {
 	}
 
 	public String[] representarAulas() {
-		return modelo.representarAulas();
+		return modelo.representaAulas();
 
 	}
 
 	public String[] representarProfesores() {
-		return modelo.representarProfesores();
+		return modelo.representaProfesores();
 
 	}
 
 	public String[] representarRerservas() {
-		return modelo.representarReservas();
+		return modelo.representaReservas();
 
 	}
 
@@ -93,12 +93,12 @@ public class Controlador {
 	}
 
 	public Reserva[] getReservasProfesor(Profesor profesor) {
-		return modelo.getReservasProfesor(profesor);
+		return modelo.getReservaProfesor(profesor);
 
 	}
 
 	public Reserva[] getReservasPermanencia(Permanencia permanencia) {
-		return modelo.getReservasPermanencia(permanencia);
+		return modelo.getReservaPermanencia(permanencia);
 
 	}
 
